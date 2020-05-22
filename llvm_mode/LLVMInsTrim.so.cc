@@ -253,6 +253,7 @@ struct InsTrim : public ModulePass {
 
     ConstantInt *Zero = ConstantInt::get(Int8Ty, 0);
     ConstantInt *One = ConstantInt::get(Int8Ty, 1);
+    ConstantInt *One32 = ConstantInt::get(Int32Ty, 1);
 
     u64 total_rs = 0;
     u64 total_hs = 0;
@@ -541,8 +542,8 @@ struct InsTrim : public ModulePass {
 
         /* shift cur_loc by 1 and save to prev_loc */
 
-        Value NewPrevLoc = IRB.CreateLShr(L, One32);
-        IRB.CreateStore(NewPrevLoc, OldPrev)
+        Value *NewPrevLoc = IRB.CreateLShr(L, One32);
+        IRB.CreateStore(NewPrevLoc, AFLPrevLoc)
             ->setMetadata(M.getMDKindID("nosanitize"), MDNode::get(C, None));
 
         if (ctx_str && has_calls) {
