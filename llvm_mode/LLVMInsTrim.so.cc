@@ -372,14 +372,21 @@ struct InsTrim : public ModulePass {
                 ->setMetadata(M.getMDKindID("nosanitize"),
                               MDNode::get(C, None));
 
-          } else
-
-#endif
-          {
-
-            IRB.CreateStore(ConstantInt::get(Int32Ty, genLabel()), AFLPrevLoc);
-
           }
+
+/*
+           else
+*/
+#endif
+          /*
+                    {
+
+                      IRB.CreateStore(ConstantInt::get(Int32Ty, genLabel()),
+             AFLPrevLoc);
+
+                    }
+
+          */
 
         }
 
@@ -530,6 +537,12 @@ struct InsTrim : public ModulePass {
         }
 
         IRB.CreateStore(Incr, MapPtrIdx)
+            ->setMetadata(M.getMDKindID("nosanitize"), MDNode::get(C, None));
+
+        /* shift cur_loc by 1 and save to prev_loc */
+
+        Value NewPrevLoc = IRB.CreateLShr(L, One32);
+        IRB.CreateStore(NewPrevLoc, OldPrev)
             ->setMetadata(M.getMDKindID("nosanitize"), MDNode::get(C, None));
 
         if (ctx_str && has_calls) {
